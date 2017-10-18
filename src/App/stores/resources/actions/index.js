@@ -21,5 +21,3 @@ export const setCurrentPage = createAction('resources/SET_CURRENT_PAGE', p => p,
 export const setSearchTerm = createAction('resources/SET_SEARCH_TERM', p => p, (p, m) => m)
 
 export const resetResource = createAction('resources/RESET_RESOURCE', p => p, (p, m) => m)
-
-export const setFilter = createAction('interface/SET_FILTER', p => p, (p, m) => m)

@@ -2,13 +2,42 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 
 import * as actions from 'App/stores/resources/actions'
-import { getEntities, getFilter } from 'App/stores/resources'
+import { getEntities } from 'App/stores/resources'
+import { getFilter } from 'App/stores/todos'
 
 import AddTodo from './components/AddTodo'
 import TodoList from './components/TodoList'
 import TodoFilter from './components/TodoFilter'
 
-const Todos = ({ todos, addTodo, toggleTodo, filter, setFilter }) => {
+const currrentTodos = (todos, listID) => {
+  if (Array.isArray(todos)) {
+    return todos.filter(todo => todo.listID === listID)
+  }
+
+  return []
+}
+
+const currentList = (lists, listID) => {
+  if (Array.isArray(lists)) {
+    const list = lists.find(list => list.id === listID)
+
+    if (list) return list
+  }
+
+  return {}
+}
+
+const Todos = ({
+  listID,
+  lists,
+  todos,
+  addTodo,
+  toggleTodo,
+  setFilter
+}) => {
+  const list = currentList(lists, listID)
+  const { filter, name } = list
+
   return (
     <section className='pa3 pa5-ns'>
       <AddTodo onSubmit={({todo}, _, {reset}) => {
@@ -16,27 +45,31 @@ const Todos = ({ todos, addTodo, toggleTodo, filter, setFilter }) => {
         reset()
       }} />
 
-      <h1 className='f4 bold center mw6'>All Todos</h1>
+      <h1 className='f4 bold center mw6'>{name}</h1>
 
-      <TodoList {...{ todos, toggleTodo, filter }} />
-      <TodoFilter {...{ filter, setFilter }} />
+      <TodoList
+        todos={currrentTodos(todos, listID)}
+        {...{ toggleTodo, filter }}
+      />
+      <TodoFilter {...{ setFilter, list }} />
     </section>
   )
 }
 
 Todos.propTypes = {
   todos: PropTypes.array,
-  filter: PropTypes.string
+  lists: PropTypes.array
 }
 
 export default connect(
-  state => ({
-    todos: getEntities('todos')(state),
-    filter: getFilter('todos')(state)
+  (state, {params: { listID }}) => ({
+    listID,
+    lists: getEntities('lists')(state),
+    todos: getEntities('todos')(state)
   }),
-  dispatch => ({
-    addTodo: (text) => dispatch(actions.submitEntity({ text }, {type: 'todos'})),
+  (dispatch, {params: { listID }}) => ({
+    addTodo: (text) => dispatch(actions.submitEntity({ text, listID }, {type: 'todos'})),
     toggleTodo: (todo, completed) => dispatch(actions.updateEntity({ ...todo, completed }, {type: 'todos'})),
-    setFilter: (filter) => dispatch(actions.setFilter({ filter }, {type: 'todos'}))
+    setFilter: (list, filter) => dispatch(actions.updateEntity({ ...list, filter }, {type: 'lists'}))
   })
 )(Todos)

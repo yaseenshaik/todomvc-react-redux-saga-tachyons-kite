@@ -103,17 +103,31 @@ const api = {
   put: (path, data) => {
     const id = path.split('/')[2]
 
-    let todo = fakeDB.todos.find(i => i.id === id)
+    if (path.match(/lists/g)) {
+      let list = fakeDB.lists.find(i => i.id === id)
 
-    if (typeof todo === 'undefined') {
-      todo = createTodo({...data, id})
+      if (typeof list === 'undefined') {
+        list = createList({...data, id})
+      } else {
+        Object.keys(data).map(key => {
+          list[key] = data[key]
+        })
+      }
+
+      return apiResponse({data: { list }})
     } else {
-      Object.keys(data).map(key => {
-        todo[key] = data[key]
-      })
-    }
+      let todo = fakeDB.todos.find(i => i.id === id)
 
-    return apiResponse({data: { todo }})
+      if (typeof todo === 'undefined') {
+        todo = createTodo({...data, id})
+      } else {
+        Object.keys(data).map(key => {
+          todo[key] = data[key]
+        })
+      }
+
+      return apiResponse({data: { todo }})
+    }
   }
 }
 

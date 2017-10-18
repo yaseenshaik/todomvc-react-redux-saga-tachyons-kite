@@ -13,14 +13,12 @@ import byId, * as fromById from './byId'
 import idsList, * as fromIdsList from './idsList'
 import status, * as fromStatus from './status'
 import pagination, * as fromPagination from './pagination'
-import filter, * as fromFilter from './filter'
 
 export default (type) => combineReducers({
   byId: byId(type),
   idsList: idsList(type),
   status: status(type),
-  pagination: pagination(type),
-  filter: filter(type)
+  pagination: pagination(type)
 })
 
 // Get one item in a state of this reducer
@@ -56,5 +54,3 @@ export const isLoading = (state, type) => fromStatus.isLoading(state[type].statu
 export const getErrors = (state, type) => fromStatus.getErrors(state[type].status)
 
 export const getPagination = (state, type) => fromPagination.getPagination(state[type].pagination)
-
-export const getFilter = (type) => (state) => fromFilter.getFilter(state[type].filter)

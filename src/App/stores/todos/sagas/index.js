@@ -29,11 +29,7 @@ export function* addTodo () {
   while (true) {
     const action = yield take(t.SUBMIT_ENTITY)
     if (action.meta && action.meta.type === 'todos') {
-      const todo = {
-        ...action.payload,
-        listID: 1 // Change this to support multiple lists
-      }
-
+      const todo = action.payload
       const response = yield call(api.post, '/todos', {...todo})
 
       yield fork(receiveResponse, response)
