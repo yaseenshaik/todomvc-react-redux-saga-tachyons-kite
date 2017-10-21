@@ -5,7 +5,7 @@ import classNames from 'classnames'
 
 const List = ({ id, name, isLast }) => {
   const todoClass = classNames(
-    'ph3 pv3 pointer bg-animate hover-bg-light-gray',
+    'bg-animate hover-bg-light-gray',
     {
       'bb b--light-silver': !isLast
     }
@@ -13,7 +13,7 @@ const List = ({ id, name, isLast }) => {
 
   return (
     <li className={todoClass}>
-      <Link to={`/list/${id}`}>
+      <Link className='db black ph3 pv3 no-underline' to={`/list/${id}`}>
         {name}
       </Link>
     </li>
@@ -21,6 +21,7 @@ const List = ({ id, name, isLast }) => {
 }
 
 List.propTypes = {
+  id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   isLast: PropTypes.bool
 }
